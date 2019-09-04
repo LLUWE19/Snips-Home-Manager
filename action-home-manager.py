@@ -76,8 +76,7 @@ class HomeManager(object):
     def start_blocking(self):
         with Hermes(MQTT_ADDR) as h:
             print("Debug")
-            h \
-                .subscribe_intents(INTENT_LIGHT_ON, self.turn_light_on) \
+            h.subscribe_intents(INTENT_LIGHT_ON, self.turn_light_on) \
                 .subscribe_intents(INTENT_LIGHT_OFF, self.turn_light_off) \
                 .subscribe_intents(INTENT_LIGHT_COLOR, self.set_light_color) \
                 .subscribe_intents(INTENT_LIGHT_BRIGHTNESS, self.set_light_brightness) \
