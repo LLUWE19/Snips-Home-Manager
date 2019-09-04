@@ -6,9 +6,10 @@ from hermes_python.hermes import Hermes
 from hermes_python.ontology import *
 import io
 
-CONFIG_INI = "config.ini.default"
+CONFIGURATION_ENCODING_FORMAT = "utf-8"
+CONFIG_INI = "config.ini"
 
-MQTT_IP_ADDR = "localhost"
+MQTT_IP_ADDR = "192.168.0.136"
 MQTT_PORT = 1883
 MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
@@ -76,14 +77,13 @@ class HomeManager(object):
     def start_blocking(self):
         with Hermes(MQTT_ADDR) as h:
             print("Debug")
-            h.subscribe_intents(INTENT_LIGHT_ON, self.turn_light_on) \
-                .subscribe_intents(INTENT_LIGHT_OFF, self.turn_light_off) \
-                .subscribe_intents(INTENT_LIGHT_COLOR, self.set_light_color) \
-                .subscribe_intents(INTENT_LIGHT_BRIGHTNESS, self.set_light_brightness) \
-                .subscribe_intents(INTENT_LIGHTS_UP, self.shift_lights_up) \
-                .subscribe_intents(INTENT_LIGHTS_DOWN, self.shift_lights_down) \
-                .subscribe_intents(INTENT_SET_SCENE, self.set_a_scene) \
-                .start()
+            h.subscribe_intents(INTENT_LIGHT_ON, self.turn_light_on).start()
+                # .subscribe_intents(INTENT_LIGHT_OFF, self.turn_light_off) \
+                # .subscribe_intents(INTENT_LIGHT_COLOR, self.set_light_color) \
+                # .subscribe_intents(INTENT_LIGHT_BRIGHTNESS, self.set_light_brightness) \
+                # .subscribe_intents(INTENT_LIGHTS_UP, self.shift_lights_up) \
+                # .subscribe_intents(INTENT_LIGHTS_DOWN, self.shift_lights_down) \
+                # .subscribe_intents(INTENT_SET_SCENE, self.set_a_scene) \
 
 
 if __name__ == "__main__":
