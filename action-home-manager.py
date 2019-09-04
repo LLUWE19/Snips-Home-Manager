@@ -36,12 +36,17 @@ class HomeManager(object):
             'Authorization': self.autho,
             "Content-Type": "application/json",
         }
+        self.steward = SnipsHomeManager(self.autho, self.header)
         # start listening to MQTT
         self.start_blocking()
 
-    def turn_light_on(self, hermes, intent_message):
-        print("[WARNING] Implement turn_light_on")
-        sentence = "Heard ya"
+    def turn_light_on(self, hermes, intent_message, rooms):
+        if len(rooms) > 0:
+            for room in rooms:
+                sentence = "Turning off light for " + room
+                #self.steward.turn_light_on(room)
+        #else:
+            #self.steward.light_on_all()
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def turn_light_off(self, hermes, intent_message):
@@ -74,14 +79,61 @@ class HomeManager(object):
         hermes.publish_end_session(intent_message.session_id, sentence)
         print("[WARNING] Implement set_a_scene")
 
+    def master_intent_callback(self,hermes, intent_message):
+        rooms = self.extract_house_rooms(intent_message)
+        intent_name = intent_message.intent.intent_name
+        if ':' in intent_name:
+            intent_name = intent_name.split(":")[1]
+        if intent_name == INTENT_LIGHT_ON:
+            self.turn_light_on(hermes, intent_message, rooms)
+        if intent_name == INTENT_LIGHT_OFF:
+            self.turn_light_off(hermes, intent_message, rooms)
+        if intent_name == INTENT_LIGHT_COLOR:
+            self.set_light_color(hermes, intent_message, rooms)
+        if intent_name == INTENT_LIGHT_BRIGHTNESS:
+            self.set_light_brightness(hermes, intent_message, rooms)
+        if intent_name == INTENT_LIGHTS_UP:
+            self.shift_lights_up(hermes, intent_message, rooms)
+        if intent_name == INTENT_LIGHTS_DOWN:
+            self.shift_lights_down(hermes, intent_message, rooms)
+        if intent_name == INTENT_SET_SCENE:
+            self.set_a_scene(hermes, intent_message, rooms)
+
+    def extract_house_rooms(self, intent_message):
+        house_rooms = []
+        if intent_message.slots.house_room:
+            for room in intent_message.slots.house_room.all():
+                print
+                type(room.value)
+                house_rooms.append(room.value)
+        return house_rooms
+
+    def extract_percentage(self, intent_message, default_percentage):
+        percentage = default_percentage
+        if intent_message.slots.percent:
+            percentage = intent_message.slots.percent.first().value
+        if percentage < 0:
+            percentage = 0
+        if percentage > 100:
+            percentage = 100
+        return percentage
+
+    def extract_color(self, intent_message):
+        color_code = None
+        if intent_message.slots.color:
+            color_code = intent_message.slots.color.first().value
+        return color_code
+
+    def extract_scene(self, intent_message):
+        scene_code = None
+        if intent_message.slots.scene:
+            scene_code = intent_message.slots.scene.first().value
+        return scene_code
+
     def start_blocking(self):
         with Hermes(MQTT_ADDR) as h:
-            print("Debug")
-            h.subscribe_intent(INTENT_LIGHT_ON, self.turn_light_on) \
-                .subscribe_intent(INTENT_LIGHT_OFF, self.turn_light_off) \
-                .subscribe_intent(INTENT_LIGHT_COLOR, self.set_light_color) \
-                .subscribe_intent(INTENT_LIGHT_BRIGHTNESS, self.set_light_brightness) \
-                .start()
+            print("Start Blocking")
+            h.subscribe_intents(self.master_intent_callback).start()
 
 
 if __name__ == "__main__":
