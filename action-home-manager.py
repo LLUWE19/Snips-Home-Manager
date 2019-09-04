@@ -42,42 +42,73 @@ class HomeManager(object):
 
     def turn_light_on(self, hermes, intent_message, rooms):
         if len(rooms) > 0:
+            sentence = "Turning on the "
             for room in rooms:
-                sentence = "Turning off light for " + room
-                #self.steward.turn_light_on(room)
-        #else:
-            #self.steward.light_on_all()
+                sentence += " " + room
+            sentence += " lights"
+        else:
+            sentence = "Turning on all the lights"
         hermes.publish_end_session(intent_message.session_id, sentence)
 
-    def turn_light_off(self, hermes, intent_message):
-        sentence = "Heard ya"
+    def turn_light_off(self, hermes, intent_message, rooms):
+        if len(rooms) > 0:
+            sentence = "Turning off the "
+            for room in rooms:
+                sentence += " " + room
+            sentence += " lights"
+        else:
+            sentence = "Turning off all the lights"
         hermes.publish_end_session(intent_message.session_id, sentence)
-        print("[WARNING] Implement turn_light_off")
 
-    def set_light_color(self, hermes, intent_message):
-        sentence = "Heard ya"
+    def set_light_color(self, hermes, intent_message, rooms):
+        color = self.extract_color(intent_message)
+        if len(rooms) > 0:
+            sentence = "changing  "
+            for room in rooms:
+                sentence += " " + room
+            sentence += " lights to " + color
+        else:
+            sentence = "changing color for all lights "
         hermes.publish_end_session(intent_message.session_id, sentence)
-        print("[WARNING] Implement set_light_color")
 
-    def set_light_brightness(self, hermes, intent_message):
-        sentence = "Heard ya"
+    def set_light_brightness(self, hermes, intent_message, rooms):
+        percent = self.extract_percentage(intent_message)
+        if len(rooms) > 0:
+            sentence = "Setting  "
+            for room in rooms:
+                sentence += " " + room
+            sentence += " lights to " + percent
+        else:
+            sentence = "Setting light brightness to " + percent
         hermes.publish_end_session(intent_message.session_id, sentence)
-        print("[WARNING] Implement set_light_brightness")
 
-    def shift_lights_up(self, hermes, intent_message):
-        sentence = "Heard ya"
+    def shift_lights_up(self, hermes, intent_message, rooms):
+        percent = self.extract_percentage(intent_message, 20)
+        if len(rooms) > 0:
+            sentence = "Shifting lights up in the  "
+            for room in rooms:
+                sentence += " " + room
+        else:
+            sentence = "Shifting lights up "
         hermes.publish_end_session(intent_message.session_id, sentence)
-        print("[WARNING] Implement shift_lights_up")
 
-    def shift_lights_down(self, hermes, intent_message):
-        sentence = "Heard ya"
+    def shift_lights_down(self, hermes, intent_message, rooms):
+        if len(rooms) > 0:
+            sentence = "shifting light down in the  "
+            for room in rooms:
+                sentence += " " + room
+        else:
+            sentence = "shifting lights down"
         hermes.publish_end_session(intent_message.session_id, sentence)
-        print("[WARNING] Implement shift_lights_down")
 
-    def set_a_scene(self, hermes, intent_message):
-        sentence = "Heard ya"
+    def set_a_scene(self, hermes, intent_message, rooms):
+        if len(rooms) > 0:
+            sentence = "Setting scene in "
+            for room in rooms:
+                sentence += " " + room
+        else:
+            sentence = "Setting a scene "
         hermes.publish_end_session(intent_message.session_id, sentence)
-        print("[WARNING] Implement set_a_scene")
 
     def master_intent_callback(self,hermes, intent_message):
         rooms = self.extract_house_rooms(intent_message)
