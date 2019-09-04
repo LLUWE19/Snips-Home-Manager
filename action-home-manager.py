@@ -36,7 +36,7 @@ class HomeManager(object):
             'Authorization': self.autho,
             "Content-Type": "application/json",
         }
-        self.steward = SnipsHomeManager(self.autho, self.header)
+        #self.steward = SnipsHomeManager(self.autho, self.header)
         # start listening to MQTT
         self.start_blocking()
 
@@ -103,7 +103,6 @@ class HomeManager(object):
         house_rooms = []
         if intent_message.slots.house_room:
             for room in intent_message.slots.house_room.all():
-                print
                 type(room.value)
                 house_rooms.append(room.value)
         return house_rooms
