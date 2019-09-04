@@ -40,27 +40,42 @@ class HomeManager(object):
 
     def turn_light_on(self, hermes, intent_message):
         print("[WARNING] Implement turn_light_on")
+        sentence = "Heard ya"
+        hermes.publish_end_session(session_id, sentence)
 
     def turn_light_off(self, hermes, intent_message):
+        sentence = "Heard ya"
+        hermes.publish_end_session(session_id, sentence)
         print("[WARNING] Implement turn_light_off")
 
     def set_light_color(self, hermes, intent_message):
+        sentence = "Heard ya"
+        hermes.publish_end_session(session_id, sentence)
         print("[WARNING] Implement set_light_color")
 
     def set_light_brightness(self, hermes, intent_message):
+        sentence = "Heard ya"
+        hermes.publish_end_session(session_id, sentence)
         print("[WARNING] Implement set_light_brightness")
 
     def shift_lights_up(self, hermes, intent_message):
+        sentence = "Heard ya"
+        hermes.publish_end_session(session_id, sentence)
         print("[WARNING] Implement shift_lights_up")
 
     def shift_lights_down(self, hermes, intent_message):
+        sentence = "Heard ya"
+        hermes.publish_end_session(session_id, sentence)
         print("[WARNING] Implement shift_lights_down")
 
     def set_a_scene(self, hermes, intent_message):
+        sentence = "Heard ya"
+        hermes.publish_end_session(session_id, sentence)
         print("[WARNING] Implement set_a_scene")
 
     def start_blocking(self):
         with Hermes(MQTT_ADDR) as h:
+            print("Debug")
             h \
                 .subscribe_intents(INTENT_LIGHT_ON, turn_light_on) \
                 .subscribe_intents(INTENT_LIGHT_OFF, turn_light_off) \
