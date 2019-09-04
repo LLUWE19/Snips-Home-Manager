@@ -24,5 +24,3 @@ fi
 . $VENV/bin/activate
 
 pip install -r requirements.txt
-
-sudo chmod +x action-home-manager.py
