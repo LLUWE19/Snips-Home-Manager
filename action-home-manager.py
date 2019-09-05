@@ -32,7 +32,6 @@ class HomeManager(object):
             self.config = None
             print("[Warning] No config file")
         self.autho = self.config['secret']['http_api_token']
-        print(self.autho)
         self.header = {
             'Authorization': self.autho,
             "Content-Type": "application/json",
@@ -72,8 +71,10 @@ class HomeManager(object):
             sentence = "changing  "
             for room in rooms:
                 sentence += " " + room
+                self.steward.light_color(room, color)
             sentence += " lights to " + color
         else:
+            self.steward.light_color_all(color)
             sentence = "changing color for all lights "
         hermes.publish_end_session(intent_message.session_id, sentence)
 
