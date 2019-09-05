@@ -86,9 +86,11 @@ class HomeManager(object):
         if len(rooms) > 0:
             sentence = "Setting  "
             for room in rooms:
+                self.steward.set_brightness(room, percent)
                 sentence += " " + room
             sentence += " lights to " + percent
         else:
+            self.steward.set_brightness_all(percent)
             sentence = "Setting light brightness to " + percent
         hermes.publish_end_session(intent_message.session_id, sentence)
 
@@ -97,17 +99,22 @@ class HomeManager(object):
         if len(rooms) > 0:
             sentence = "Shifting lights up in the  "
             for room in rooms:
+                self.steward.shift_light_up(room, percent)
                 sentence += " " + room
         else:
+            self.steward.shift_light_up_all(percent)
             sentence = "Shifting lights up "
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def shift_lights_down(self, hermes, intent_message, rooms):
+        percent = self.extract_percentage(intent_message, 20)
         if len(rooms) > 0:
             sentence = "shifting light down in the  "
             for room in rooms:
+                self.steward.shift_light_down(room, percent)
                 sentence += " " + room
         else:
+            self.steward.shift_light_down_all(percent)
             sentence = "shifting lights down"
         hermes.publish_end_session(intent_message.session_id, sentence)
 

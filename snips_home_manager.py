@@ -38,7 +38,11 @@ class SnipsHomeManager:
         :return: None
         """
         url = self.api_address + 'services/light/turn_on'
-        request = rq.post(url, headers=self.header)
+        body = {
+            "entity_id": "all"
+        }
+        json_body = json.dumps(body)
+        request = rq.post(url, data=json_body, headers=self.header)
 
     def light_off(self, room):
         """
@@ -59,7 +63,11 @@ class SnipsHomeManager:
         :return:
         """
         url = self.api_address + 'services/light/turn_off'
-        request = rq.post(url, headers=self.header)
+        body = {
+            "entity_id": "all",
+        }
+        json_body = json.dumps(body)
+        request = rq.post(url, data=json_body, headers=self.header)
 
     def light_color(self, room, color):
         url = self.api_address + 'services/light/turn_on'
@@ -73,7 +81,40 @@ class SnipsHomeManager:
     def light_color_all(self, color):
         url = self.api_address + 'services/light/turn_on'
         body = {
+            "entity_id": "all",
             "color_name": color
         }
         json_body = json.dumps(body)
         request = rq.post(url, data=json_body, headers=self.header)
+
+    def light_brightness(self, room, brightness):
+        url = self.api_address + 'services/light/turn_on'
+        body = {
+            "entity_id": "light.{}_light".format(room),
+            "brightness": brightness
+        }
+        json_body = json.dumps(body)
+        request = rq.post(url, data=json_body, headers=self.header)
+
+    def light_brightness_all(self, brightness):
+        url = self.api_address + 'services/light/turn_on'
+        body = {
+            "entity_id": "all",
+            "brightness": brightness
+        }
+        json_body = json.dumps(body)
+        request = rq.post(url, data=json_body, headers=self.header)
+
+    def shift_light_up(self, room, percent):
+        url = self.api_address + 'states/bedroom_light'
+        request = rq.get(url, headers=self.header)
+        print(request.text)
+
+
+    def shift_light_up_all(self, room, percent):
+
+
+    def shift_light_down(self, room, percent):
+
+
+    def shift_light_down_all(self, room, percent):
