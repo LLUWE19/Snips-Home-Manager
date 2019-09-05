@@ -58,10 +58,11 @@ class HomeManager(object):
         if len(rooms) > 0:
             sentence = "Turning off the "
             for room in rooms:
-
+                self.steward.light_off(room)
                 sentence += " " + room
             sentence += " lights"
         else:
+            self.steward.light_off_all()
             sentence = "Turning off all the lights"
         hermes.publish_end_session(intent_message.session_id, sentence)
 
