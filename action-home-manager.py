@@ -22,7 +22,7 @@ INTENT_LIGHTS_UP = "shiftUp"
 INTENT_LIGHTS_DOWN = "shiftDown"
 INTENT_SET_SCENE = "setScene"
 
-INTENT_TV_ON = "putTvOnf"
+INTENT_TV_ON = "putTvOn"
 INTENT_TV_OFF = "putTvOff"
 
 
@@ -143,7 +143,7 @@ class HomeManager(object):
 
     def turn_tv_off(self, hermes, intent_message):
         self.steward.tv_off()
-        sentence = "tee vee on"
+        sentence = "tee vee off"
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def master_intent_callback(self,hermes, intent_message):
@@ -152,6 +152,7 @@ class HomeManager(object):
         print("[DEBUG] " + intent_name)
         if ':' in intent_name:
             intent_name = intent_name.split(":")[1]
+            print("[DEBUG] " + intent_name)
         if intent_name == INTENT_LIGHT_ON:
             self.turn_light_on(hermes, intent_message, rooms)
         if intent_name == INTENT_LIGHT_OFF:
