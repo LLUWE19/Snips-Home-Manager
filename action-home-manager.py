@@ -86,11 +86,11 @@ class HomeManager(object):
         if len(rooms) > 0:
             sentence = "Setting  "
             for room in rooms:
-                self.steward.set_brightness(room, percent)
+                self.steward.light_brightness(room, percent)
                 sentence += " " + room
             sentence += " lights to " + percent
         else:
-            self.steward.set_brightness_all(percent)
+            self.steward.light_brightness_all(percent)
             sentence = "Setting light brightness to " + percent
         hermes.publish_end_session(intent_message.session_id, sentence)
 
