@@ -22,8 +22,8 @@ INTENT_LIGHTS_UP = "shiftUp"
 INTENT_LIGHTS_DOWN = "shiftDown"
 INTENT_SET_SCENE = "setScene"
 
-INTENT_TV_ON = "putTvOn"
-INTENT_TV_OFF = "putTvOff"
+INTENT_TV_ON = "LLUWE19:putTvOff"
+INTENT_TV_OFF = "LLUWE19:putTvOn"
 
 
 class HomeManager(object):
