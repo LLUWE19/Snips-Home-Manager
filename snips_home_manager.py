@@ -34,7 +34,7 @@ class SnipsHomeManager:
 
     def light_on_all(self):
         """
-        Ask Hass to turn on every light entity
+        Ask Hass to turn on all of the lights
         :return: None
         """
         url = self.api_address + 'services/light/turn_on'
@@ -60,7 +60,7 @@ class SnipsHomeManager:
     def light_off_all(self):
         """
         Ask Hass to turn off all of the lights
-        :return:
+        :return: None
         """
         url = self.api_address + 'services/light/turn_off'
         body = {
@@ -70,6 +70,12 @@ class SnipsHomeManager:
         request = rq.post(url, data=json_body, headers=self.header)
 
     def light_color(self, room, color):
+        """
+        Ask Hass to change a specific lights color
+        :param room: String, room to change light color
+        :param color: String, human readable name of a color e.g. red, blue
+        :return: None
+        """
         url = self.api_address + 'services/light/turn_on'
         body = {
             "entity_id": "light.{}_light".format(room),
@@ -79,6 +85,11 @@ class SnipsHomeManager:
         request = rq.post(url, data=json_body, headers=self.header)
 
     def light_color_all(self, color):
+        """
+        Ask Hass to change all of the lights colors
+        :param color:
+        :return: None
+        """
         url = self.api_address + 'services/light/turn_on'
         body = {
             "entity_id": "all",
@@ -88,6 +99,12 @@ class SnipsHomeManager:
         request = rq.post(url, data=json_body, headers=self.header)
 
     def light_brightness(self, room, brightness):
+        """
+        Ask Hass to set a specific lights brightness
+        :param room: String, room to change lights brightness
+        :param brightness: Int, percentage, how bright the light should be
+        :return: None
+        """
         url = self.api_address + 'services/light/turn_on'
         body = {
             "entity_id": "light.{}_light".format(room),
@@ -97,6 +114,11 @@ class SnipsHomeManager:
         request = rq.post(url, data=json_body, headers=self.header)
 
     def light_brightness_all(self, brightness):
+        """
+        Ask Hass to change all of the lights brightness
+        :param brightness: Int, percentage, how bright the lights should be
+        :return: None
+        """
         url = self.api_address + 'services/light/turn_on'
         body = {
             "entity_id": "all",
@@ -106,15 +128,73 @@ class SnipsHomeManager:
         request = rq.post(url, data=json_body, headers=self.header)
 
     def shift_light_up(self, room, percent):
+        """
+        Ask Hass to make a specific light brighter.
+        Asks Hass for the current light brightness, then adds on the specified brightness
+        :param room: String, room to change lights brightness
+        :param percent: Int, percentage, amount to increase the lights brightness
+        :return: None
+        """
         url = self.api_address + 'states/light.{}_light'.format(room)
         request = rq.get(url, headers=self.header)
         print(request.text)
+        response = request.json()
+        current_brightness = response['attributes']['brightness']
 
+        new_brightness = current_brightness + percent
 
-    # def shift_light_up_all(self, room, percent):
-    #
-    #
-    # def shift_light_down(self, room, percent):
-    #
-    #
-    # def shift_light_down_all(self, room, percent):
+        if new_brightness < 0:
+            new_brightness = 0
+        if new_brightness > 100:
+            new_brightness = 100
+
+        url = self.api_address + 'services/light/turn_on'
+        body = {
+            "entity_id": "light.{}_light".format(room),
+            "brightness": new_brightness
+        }
+        json_body = json.dumps(body)
+        request = rq.post(url, data=json_body, headers=self.header)
+
+    def shift_light_up_all(self, percent):
+        """
+        !!!!!!NEEDS IMPLEMENTATION!!!!!!
+        Ask Hass to make the lights brighter
+        :param percent: Int, percentage, amount to increase the lights brightness
+        :return: None
+        """
+
+    def shift_light_down(self, room, percent):
+        """
+        Ask Hass to make the lights dimmer
+        :param percent: Int, percentage, amount to decrease the lights brightness
+        :return: None
+        """
+        url = self.api_address + 'states/light.{}_light'.format(room)
+        request = rq.get(url, headers=self.header)
+        print(request.text)
+        response = request.json()
+        current_brightness = response['attributes']['brightness']
+
+        new_brightness = current_brightness - percent
+
+        if new_brightness < 0:
+            new_brightness = 0
+        if new_brightness > 100:
+            new_brightness = 100
+
+        url = self.api_address + 'services/light/turn_on'
+        body = {
+            "entity_id": "light.{}_light".format(room),
+            "brightness": new_brightness
+        }
+        json_body = json.dumps(body)
+        request = rq.post(url, data=json_body, headers=self.header)
+
+    def shift_light_down_all(self, room, percent):
+        """
+        !!!!!!NEEDS IMPLEMENTATION!!!!!!
+        Ask Hass to make the lights dimmer
+        :param percent: Int, percentage, amount to decrease the lights brightness
+        :return: None
+        """

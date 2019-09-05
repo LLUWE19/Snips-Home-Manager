@@ -102,8 +102,8 @@ class HomeManager(object):
                 self.steward.shift_light_up(room, percent)
                 sentence += " " + room
         else:
-            self.steward.shift_light_up_all(percent)
-            sentence = "Shifting lights up "
+            #self.steward.shift_light_up_all(percent)
+            sentence = "Can only shift a specific light "
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def shift_lights_down(self, hermes, intent_message, rooms):
@@ -114,8 +114,8 @@ class HomeManager(object):
                 self.steward.shift_light_down(room, percent)
                 sentence += " " + room
         else:
-            self.steward.shift_light_down_all(percent)
-            sentence = "shifting lights down"
+            #self.steward.shift_light_down_all(percent)
+            sentence = "Can only shift a specific light"
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def set_a_scene(self, hermes, intent_message, rooms):
