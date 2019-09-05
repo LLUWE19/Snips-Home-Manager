@@ -64,7 +64,7 @@ class SnipsHomeManager:
     def light_color(self, room, color):
         url = self.api_address + 'services/light/turn_on'
         body = {
-            "entity_id": "light.{}_light".format(room)
+            "entity_id": "light.{}_light".format(room),
             "color_name": color
         }
         json_body = json.dumps(body)
