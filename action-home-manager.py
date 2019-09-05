@@ -88,10 +88,10 @@ class HomeManager(object):
             for room in rooms:
                 self.steward.light_brightness(room, percent)
                 sentence += " " + room
-            sentence += " lights to " + percent
+            sentence += " lights to " + str(percent)
         else:
             self.steward.light_brightness_all(percent)
-            sentence = "Setting light brightness to " + percent
+            sentence = "Setting light brightness to " + str(percent)
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def shift_lights_up(self, hermes, intent_message, rooms):
