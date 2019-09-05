@@ -22,8 +22,8 @@ INTENT_LIGHTS_UP = "shiftUp"
 INTENT_LIGHTS_DOWN = "shiftDown"
 INTENT_SET_SCENE = "setScene"
 
-INTENT_TV_ON = "tvOn"
-INTENT_TV_OFF = "tvOff"
+INTENT_TV_ON = "putTvOn"
+INTENT_TV_OFF = "putTvOff"
 
 
 class HomeManager(object):
