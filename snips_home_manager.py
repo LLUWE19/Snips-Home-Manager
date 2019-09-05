@@ -111,10 +111,10 @@ class SnipsHomeManager:
         print(request.text)
 
 
-    def shift_light_up_all(self, room, percent):
-
-
-    def shift_light_down(self, room, percent):
-
-
-    def shift_light_down_all(self, room, percent):
+    # def shift_light_up_all(self, room, percent):
+    #
+    #
+    # def shift_light_down(self, room, percent):
+    #
+    #
+    # def shift_light_down_all(self, room, percent):
