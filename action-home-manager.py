@@ -4,7 +4,7 @@
 from snipsTools import SnipsConfigParser
 from hermes_python.hermes import Hermes
 from hermes_python.ontology import *
-from snips-home-manager import SnipsHomeManager
+from snips_home_manager import SnipsHomeManager
 import io
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
