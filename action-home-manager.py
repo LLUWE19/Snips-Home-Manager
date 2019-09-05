@@ -22,6 +22,9 @@ INTENT_LIGHTS_UP = "shiftUp"
 INTENT_LIGHTS_DOWN = "shiftDown"
 INTENT_SET_SCENE = "setScene"
 
+INTENT_TV_ON = "tvOn"
+INTENT_TV_OFF = "tvOff"
+
 
 class HomeManager(object):
     def __init__(self):
@@ -125,6 +128,16 @@ class HomeManager(object):
                 sentence += " " + room
         else:
             sentence = "Setting a scene "
+        hermes.publish_end_session(intent_message.session_id, sentence)
+
+    def turn_tv_on(self, hermes, intent_message):
+        self.steward.tv_on()
+        sentence = "tee vee on"
+        hermes.publish_end_session(intent_message.session_id, sentence)
+
+    def turn_tv_off(self, hermes, intent_message):
+        self.steward.tv_off()
+        sentence = "tee vee on"
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def master_intent_callback(self,hermes, intent_message):

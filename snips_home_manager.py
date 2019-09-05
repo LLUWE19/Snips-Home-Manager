@@ -159,14 +159,15 @@ class SnipsHomeManager:
     def shift_light_up_all(self, percent):
         """
         !!!!!!NEEDS IMPLEMENTATION!!!!!!
-        Ask Hass to make the lights brighter
+        Ask Hass to make the lights brighter.
         :param percent: Int, percentage, amount to increase the lights brightness
         :return: None
         """
 
     def shift_light_down(self, room, percent):
         """
-        Ask Hass to make the lights dimmer
+        Ask Hass to make a specific light dimmer.
+        Asks Hass for the current light brightness, then subtracts the specified brightness
         :param percent: Int, percentage, amount to decrease the lights brightness
         :return: None
         """
@@ -198,3 +199,28 @@ class SnipsHomeManager:
         :param percent: Int, percentage, amount to decrease the lights brightness
         :return: None
         """
+
+    def tv_on(self):
+        """
+        Ask Hass to turn the tv on.
+        Could be modified for multiple tvs
+        :return: None
+        """
+        url = self.api_address + 'services/switch/turn_on'
+        body = {
+            "entity_id": "switch.living_room_tv",
+        }
+        json_body = json.dumps(body)
+        request = rq.post(url, data=json_body, headers=self.header)
+
+    def tv_off(self):
+        """
+        Ask Hass to turn the tv off
+        :return: None
+        """
+        url = self.api_address + 'services/switch/turn_off'
+        body = {
+            "entity_id": "switch.living_room_tv",
+        }
+        json_body = json.dumps(body)
+        request = rq.post(url, data=json_body, headers=self.header)
