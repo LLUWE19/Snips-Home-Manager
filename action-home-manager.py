@@ -4,6 +4,7 @@
 from snipsTools import SnipsConfigParser
 from hermes_python.hermes import Hermes
 from hermes_python.ontology import *
+from snips-home-manager import SnipsHomeManager
 import io
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
@@ -36,7 +37,7 @@ class HomeManager(object):
             'Authorization': self.autho,
             "Content-Type": "application/json",
         }
-        #self.steward = SnipsHomeManager(self.autho, self.header)
+        self.steward = SnipsHomeManager(self.autho, self.header)
         # start listening to MQTT
         self.start_blocking()
 
@@ -44,16 +45,20 @@ class HomeManager(object):
         if len(rooms) > 0:
             sentence = "Turning on the "
             for room in rooms:
+                print("Turning on ", room)
                 sentence += " " + room
+                self.steward.light_on(room)
             sentence += " lights"
         else:
             sentence = "Turning on all the lights"
+            self.steward.light_on_all()
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def turn_light_off(self, hermes, intent_message, rooms):
         if len(rooms) > 0:
             sentence = "Turning off the "
             for room in rooms:
+
                 sentence += " " + room
             sentence += " lights"
         else:
@@ -72,7 +77,10 @@ class HomeManager(object):
         hermes.publish_end_session(intent_message.session_id, sentence)
 
     def set_light_brightness(self, hermes, intent_message, rooms):
-        percent = self.extract_percentage(intent_message)
+        percent = self.extract_percentage(intent_message, None)
+        if percent is None:
+            sentence = "Did not specify the brightness"
+            hermes.publish_end_session(intent_message.session_id, sentence)
         if len(rooms) > 0:
             sentence = "Setting  "
             for room in rooms:
