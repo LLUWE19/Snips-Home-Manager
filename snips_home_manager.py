@@ -106,7 +106,7 @@ class SnipsHomeManager:
         request = rq.post(url, data=json_body, headers=self.header)
 
     def shift_light_up(self, room, percent):
-        url = self.api_address + 'states/bedroom_light'
+        url = self.api_address + 'states/light.{}_light'.format(room)
         request = rq.get(url, headers=self.header)
         print(request.text)
 
