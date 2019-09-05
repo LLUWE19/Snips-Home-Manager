@@ -22,11 +22,17 @@ INTENT_LIGHTS_UP = "shiftUp"
 INTENT_LIGHTS_DOWN = "shiftDown"
 INTENT_SET_SCENE = "setScene"
 
-INTENT_TV_ON = "LLUWE19:putTvOff"
-INTENT_TV_OFF = "LLUWE19:putTvOn"
+INTENT_TV_ON = "putTvOnf"
+INTENT_TV_OFF = "putTvOff"
 
 
 class HomeManager(object):
+    """
+    The HomeManager is used to manage the disucssion between Snips and Hass via MQTT (using Hermes).
+    The HomeManager listens for intents and implements the logic to carry out required actions. The HomeManager passes
+    on the actual task of calling Hass services and communicating with Hass onto the "SnipsHomeManager" who makes calls
+    to the Hass REST API via HTTP.
+    """
     def __init__(self):
         print("Loading HomeManager")
         try:
@@ -143,6 +149,7 @@ class HomeManager(object):
     def master_intent_callback(self,hermes, intent_message):
         rooms = self.extract_house_rooms(intent_message)
         intent_name = intent_message.intent.intent_name
+        print("[DEBUG] " + intent_name)
         if ':' in intent_name:
             intent_name = intent_name.split(":")[1]
         if intent_name == INTENT_LIGHT_ON:
@@ -159,6 +166,10 @@ class HomeManager(object):
             self.shift_lights_down(hermes, intent_message, rooms)
         if intent_name == INTENT_SET_SCENE:
             self.set_a_scene(hermes, intent_message, rooms)
+        if intent_name == INTENT_TV_ON:
+            self.turn_tv_on(hermes, intent_message)
+        if intent_name == INTENT_TV_OFF:
+            self.turn_tv_off(hermes, intent_message)
 
     def extract_house_rooms(self, intent_message):
         house_rooms = []
