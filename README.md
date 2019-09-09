@@ -27,16 +27,16 @@ The intents to manage multi turn dialogue include:
 
 These intents are intended to be used to engage in a multi-turn dialgoue with snips. E.g. 
 
-User: "hey Snips, im home". 
-Snips: "Welcome home, do you want the lights on?"
-User: "Yes"
-Snips: "Okay, how bright do you want the lights?"
-User: "50 percent"
-Snips: "Okay, what color do you want the light?"
-User: "White"
-Snips: "Okay, did you want the TV on?"
-User: "Yes please"
-Snips: "Okay, welcome home"
+- User: "hey Snips, im home". 
+- Snips: "Welcome home, do you want the lights on?"
+- User: "Yes"
+- Snips: "Okay, how bright do you want the lights?"
+- User: "50 percent"
+- Snips: "Okay, what color do you want the light?"
+- User: "White"
+- Snips: "Okay, did you want the TV on?"
+- User: "Yes please"
+- Snips: "Okay, welcome home"
 
 
 
