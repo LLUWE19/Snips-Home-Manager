@@ -5,6 +5,7 @@ from snipsTools import SnipsConfigParser
 from hermes_python.hermes import Hermes
 from hermes_python.ontology import *
 from snips_home_manager import SnipsHomeManager
+from intent_processor import IntentProcessor
 import io
 
 CONFIGURATION_ENCODING_FORMAT = "utf-8"
@@ -56,7 +57,7 @@ class HomeManager(object):
             'Authorization': self.autho,
             "Content-Type": "application/json",
         }
-
+        self.intent_processor = IntentProcessor()
         # Manage the calls to the Hass API
         self.steward = SnipsHomeManager(self.autho, self.header)
         self.last_question = None
@@ -75,108 +76,7 @@ class HomeManager(object):
         # start listening to MQTT
         self.start_blocking()
 
-    def turn_light_on(self, hermes, intent_message, rooms):
-        """
-        Call back function to manage turning on the lights.
-        Will turn on a few lights in specified rooms, or will turn every light on
-        :param rooms: Room names extracted from the intent slots
-        :return: None, calls terminate_feedback to manage the conversation
-        """
-        if len(rooms) > 0:
-            sentence = "Turning on the "
-            for room in rooms:
-                print("Turning on ", room)
-                sentence += " " + room
-                self.steward.light_on(room)
-            sentence += " lights"
-        else:
-            sentence = "Turning on all the lights"
-            self.steward.light_on_all()
-        self.terminate_feedback(hermes, intent_message, sentence)
 
-    def turn_light_off(self, hermes, intent_message, rooms):
-        if len(rooms) > 0:
-            sentence = "Turning off the "
-            for room in rooms:
-                self.steward.light_off(room)
-                sentence += " " + room
-            sentence += " lights"
-        else:
-            self.steward.light_off_all()
-            sentence = "Turning off all the lights"
-        self.terminate_feedback(hermes, intent_message, sentence)
-
-    def set_light_color(self, hermes, intent_message, rooms):
-        color = self.extract_color(intent_message)
-        if len(rooms) > 0:
-            sentence = "changing  "
-            for room in rooms:
-                sentence += " " + room
-                self.steward.light_color(room, color)
-            sentence += " lights to " + color
-        else:
-            self.steward.light_color_all(color)
-            sentence = "changing color for all lights "
-        self.terminate_feedback(hermes, intent_message, sentence)
-
-    def set_light_brightness(self, hermes, intent_message, rooms):
-        percent = self.extract_percentage(intent_message, None)
-        if percent is None:
-            sentence = "Did not specify the brightness"
-            self.terminate_feedback(hermes, intent_message, sentence)
-        if len(rooms) > 0:
-            sentence = "Setting  "
-            for room in rooms:
-                self.steward.light_brightness(room, percent)
-                sentence += " " + room
-            sentence += " lights to " + str(percent)
-        else:
-            self.steward.light_brightness_all(percent)
-            sentence = "Setting light brightness to " + str(percent)
-        self.terminate_feedback(hermes, intent_message, sentence)
-
-    def shift_lights_up(self, hermes, intent_message, rooms):
-        percent = self.extract_percentage(intent_message, 20)
-        if len(rooms) > 0:
-            sentence = "Shifting lights up in the  "
-            for room in rooms:
-                self.steward.shift_light_up(room, percent)
-                sentence += " " + room
-        else:
-            #self.steward.shift_light_up_all(percent)
-            sentence = "Can only shift a specific light "
-        self.terminate_feedback(hermes, intent_message, sentence)
-
-    def shift_lights_down(self, hermes, intent_message, rooms):
-        percent = self.extract_percentage(intent_message, 20)
-        if len(rooms) > 0:
-            sentence = "shifting light down in the  "
-            for room in rooms:
-                self.steward.shift_light_down(room, percent)
-                sentence += " " + room
-        else:
-            #self.steward.shift_light_down_all(percent)
-            sentence = "Can only shift a specific light"
-        self.terminate_feedback(hermes, intent_message, sentence)
-
-    def set_a_scene(self, hermes, intent_message, rooms):
-        if len(rooms) > 0:
-            sentence = "Setting scene in "
-            for room in rooms:
-                sentence += " " + room
-        else:
-            sentence = "Setting a scene "
-        self.terminate_feedback(hermes, intent_message, sentence)
-
-    def turn_tv_on(self, hermes, intent_message):
-        self.steward.tv_on()
-        sentence = "tee vee on"
-        self.terminate_feedback(hermes, intent_message, sentence)
-
-    def turn_tv_off(self, hermes, intent_message):
-        self.steward.tv_off()
-        sentence = "tee vee off"
-        self.terminate_feedback(hermes, intent_message, sentence)
 
     def arrive_home(self, hermes, intent_message):
         print("User has arrived home")
@@ -192,10 +92,6 @@ class HomeManager(object):
                 sentence = self.questions['light_color']
                 self.terminate_feedback(hermes, intent_message, sentence, "arrive_home")
         elif self.last_question == self.questions['light_color']:
-
-
-
-
 
     def master_intent_callback(self,hermes, intent_message):
         """
@@ -232,67 +128,6 @@ class HomeManager(object):
         if intent_name == INTENT_GIVE_ANSWER and self.contexts['arrive_home']:
             self.welcome_home_handler(hermes, intent_message, INTENT_GIVE_ANSWER)
 
-
-    def extract_house_rooms(self, intent_message):
-        """
-        Extract the rooms or entities from the given intents slots
-        :return: A list of rooms to manage devices in
-        """
-        house_rooms = []
-        if intent_message.slots.house_room:
-            for room in intent_message.slots.house_room.all():
-                type(room.value)
-                house_rooms.append(room.value)
-        return house_rooms
-
-    def extract_percentage(self, intent_message, default_percentage):
-        """
-        Extract the percentage value from the given intents slots
-        :return: A float percentage value
-        """
-        percentage = default_percentage
-        if intent_message.slots.percent:
-            percentage = intent_message.slots.percent.first().value
-        if percentage < 0:
-            percentage = 0
-        if percentage > 100:
-            percentage = 100
-        return percentage
-
-    def extract_color(self, intent_message):
-        """
-        Extract the color value from the given intents slots
-        :return: A human readable color value
-        """
-        color_code = None
-        if intent_message.slots.color:
-            color_code = intent_message.slots.color.first().value
-        return color_code
-
-    def extract_scene(self, intent_message):
-        """
-        Extract the scene from the given intents slots
-        :return: A code describing which scene to call
-        """
-        scene_code = None
-        if intent_message.slots.scene:
-            scene_code = intent_message.slots.scene.first().value
-        return scene_code
-
-    def extract_answer(self, intent_message):
-        """
-        Extract a yes or no answer from the given intent slot
-        :return: A boolean describing yes or no
-        """
-        final_answer = None
-        if intent_message.slots.answer:
-            answer = intent_message.slots.color.first().value
-            if answer == "yes":
-                final_answer = True
-            else:
-                final_answer = False
-
-        return final_answer
 
     def start_blocking(self):
         """
